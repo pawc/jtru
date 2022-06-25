@@ -131,7 +131,7 @@ class App extends React.Component {
           </Box>
 
           { !this.state.isLoggedIn &&
-            <LoginForm callback={responseOk => { 
+            <LoginForm loginCallback={responseOk => { 
                 this.setState({
                   isLoggedIn: responseOk,
                 })

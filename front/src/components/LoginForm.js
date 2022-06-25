@@ -12,7 +12,8 @@ const LoginForm = (props) => {
 
   const [username, setUsername] = React.useState("");
   const [password, setPassword] = React.useState("");
-  const [invalidCredentials, setInvalidCredentials] = React.useState(false);
+  const [errorText, setErrorText] = React.useState("");
+  const [successText, setSuccessText] = React.useState("");
 
   const handleLogin = () => {
 
@@ -26,8 +27,10 @@ const LoginForm = (props) => {
       }
     })
     .then((response) => {
-        setInvalidCredentials(!response.ok)
-        props.callback(response.ok)
+      if(!response.ok){
+        setErrorText("Invalid credentials")
+      }
+      props.loginCallback(response.ok)
     })
   }
 
@@ -39,8 +42,6 @@ const LoginForm = (props) => {
       password: password
     }
 
-    console.log(user)
-
     fetch(configData.SERVER_URL + "/register", {
       method: "POST",
       body: JSON.stringify(user),
@@ -49,7 +50,13 @@ const LoginForm = (props) => {
       }
     })
     .then((response) => {
-        console.log(response)
+        if(response.ok){
+          setErrorText('')
+          setSuccessText("Registered successfully. You can now log in.")
+        }
+        else{
+          setErrorText("Credentials too short or user already exists")
+        }
     })
   }
 
@@ -71,8 +78,11 @@ const LoginForm = (props) => {
             <TextField label="password" onChange={(e) => setPassword(e.target.value)} type={'password'}></TextField>
           </Grid>
           <Grid item xs={12}>
-            { invalidCredentials &&
-            <Typography sx={{color: 'red'}}>invalid e-mail or password</Typography>
+            { errorText !== '' &&
+            <Typography sx={{color: 'red'}}>{errorText}</Typography>
+            }
+            { successText !== '' &&
+            <Typography sx={{color: 'green'}}>{successText}</Typography>
             }
           </Grid>
           <Grid item xs={6}>
