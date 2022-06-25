@@ -30,3 +30,12 @@ services:
       - frontOrigin=http://localhost:3000
     depends_on:
       - jtru_db
+  jtru_front:
+    build: ./front
+    container_name: jtru_front
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    depends_on:
+      - jtru_db
+      - jtru_back
