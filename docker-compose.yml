@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  jtru_db:
+    image: mariadb:10.7.3
+    restart: unless-stopped
+    container_name: jtru_db
+    environment:
+      - MYSQL_DATABASE=jtru
+      - MYSQL_USER=jtru
+      - MYSQL_PASSWORD=jtru_password
+      - MYSQL_ROOT_PASSWORD=root_password
+      - MYSQL_ROOT_HOST=%
+    volumes:
+      - ./data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+  jtru_back:
+    build: .
+    container_name: jtru_back
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      - clientId=44564eb2d4b949f386508005b42710ba
+      - clientSecret=
+      - spring.datasource.url=jdbc:mariadb://jtru_db:3306/jtru?useUnicode=yes&characterEncoding=UTF-8
+      - spring.datasource.username=jtru
+      - spring.datasource.password=jtru_password
+      - frontOrigin=http://localhost:3000
+    depends_on:
+      - jtru_db
