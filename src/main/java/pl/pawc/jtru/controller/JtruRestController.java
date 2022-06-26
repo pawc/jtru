@@ -55,8 +55,6 @@ public class JtruRestController {
                        HttpServletResponse response,
                        @RequestBody Review review){
 
-        System.out.println(review);
-
         String email = request.getRemoteUser();
         User oneByEmail = userRepository.findOneByEmail(email);
 
@@ -77,6 +75,13 @@ public class JtruRestController {
             reviewRepository.delete(reviewByUserAndItem);
         }
 
+    }
+
+    @GetMapping("/myReviews")
+    public List<Review> myReviews(HttpServletRequest request){
+        String email = request.getRemoteUser();
+        User oneByEmail = userRepository.findOneByEmail(email);
+        return reviewRepository.findAllByUser(oneByEmail);
     }
 
 }
