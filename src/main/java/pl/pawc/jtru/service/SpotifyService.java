@@ -3,7 +3,7 @@ package pl.pawc.jtru.service;
 import org.apache.hc.core5.http.ParseException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import pl.pawc.jtru.model.Item;
+import pl.pawc.jtru.entity.Item;
 import se.michaelthelin.spotify.SpotifyApi;
 import se.michaelthelin.spotify.exceptions.SpotifyWebApiException;
 import se.michaelthelin.spotify.model_objects.credentials.ClientCredentials;
@@ -17,6 +17,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
 
 @Component
 public class SpotifyService {
@@ -57,11 +59,13 @@ public class SpotifyService {
             for (ArtistSimplified artist : i.getArtists()) {
                 artists.add(artist.getName());
             }
+
+
             item.setYear(Integer.parseInt(i.getReleaseDate().substring(0, 4)));
-            item.setArtists(artists);
+            item.setArtists(StringUtils.join(artists, ","));
             item.setTitle(i.getName());
             item.setType(i.getType().getType());
-            item.setId(i.getId());
+            item.setItemKey(i.getId());
             item.setImg_src(Arrays.stream(i.getImages()).findFirst().get().getUrl());
 
             results.add(item);

@@ -6,20 +6,28 @@ import lombok.Setter;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
 
 @Entity
 @Getter
 @Setter
-public class Fav {
-
-    @ManyToOne
-    User user;
+public class Item {
 
     @Id
     private String itemKey;
 
     @Column
     private String type;
+
+    @Column
+    private String artists;
+
+    @Column
+    private String title;
+
+    @Column
+    private int year;
+
+    @Column
+    private String img_src;
 
 }

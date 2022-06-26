@@ -17,15 +17,27 @@ class MyCard extends React.Component {
     }
   }
 
-  toggleLike(type, key){
+  toggleLike(type, key, artists, title, img_src, year){
 
     this.setState({
       isFav : !this.state.isFav
     })
 
     let body =  {
-      type: type,
-      itemKey: key
+      id: 0,
+      user: {
+        id: 0,
+        email: null,
+        password: null
+      },
+      item: {
+        itemKey: key,
+        type: type,
+        artists: artists,
+        title: title,
+        img_src: img_src,
+        year: year
+      }
     }
   
     fetch(configData.SERVER_URL + '/toggle', {
@@ -68,7 +80,9 @@ class MyCard extends React.Component {
                 <Grid item xs={4}>
                   <Typography align="right">
                     { !this.state.isFav &&
-                      <ThumbUpOffAlt sx={{color: "#1f6933"}} onClick={() => this.toggleLike(this.props.itemType, this.props.itemKey)}/>
+                      <ThumbUpOffAlt sx={{color: "#1f6933"}} onClick={() => this.toggleLike(this.props.itemType, 
+                        this.props.itemKey, this.props.artists, this.props.title, this.props.img_src, this.props.year
+                        )}/>
                     }
                     { this.state.isFav &&
                       <ThumbUpAlt sx={{color: "#1f6933"}} onClick={() => this.toggleLike(this.props.itemType, this.props.itemKey)}/>
