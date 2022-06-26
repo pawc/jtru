@@ -51,9 +51,8 @@ class App extends React.Component {
       .then(res => {
         if(res.ok){
           res.json().then(json => {
-            //console.log(json)
             json.map((item, i) => {
-              let artists = item.artists.map((a, i) => {return a.name}).join()
+              let artists = item.artists.join()
               let img_src = item.img_src
               let album = {
                 key: item.id,

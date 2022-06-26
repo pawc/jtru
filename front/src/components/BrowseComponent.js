@@ -30,6 +30,7 @@ export default function BrowseComponent(props){
                   return (
                     <MyCard 
                       key = {a.key}
+                      itemKey = {a.key}
                       title = {a.title} 
                       img_src = {a.img_src}
                       artists = {a.artists}

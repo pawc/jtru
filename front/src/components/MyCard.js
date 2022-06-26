@@ -25,7 +25,7 @@ class MyCard extends React.Component {
 
     let body =  {
       type: type,
-      key: key
+      itemKey: key
     }
   
     fetch(configData.SERVER_URL + '/toggle', {
