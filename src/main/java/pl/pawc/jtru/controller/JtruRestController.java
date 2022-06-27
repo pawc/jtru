@@ -42,7 +42,22 @@ public class JtruRestController {
     public List<Item> test(HttpServletRequest request,
                            HttpServletResponse response,
                            @RequestParam("q") String q) throws IOException, ParseException, SpotifyWebApiException {
-        return spotifyService.search(q);
+
+
+        List<Item> search = spotifyService.search(q);
+
+        String email = request.getRemoteUser();
+        User oneByEmail = userRepository.findOneByEmail(email);
+        List<Review> reviewsByUser = reviewRepository.findAllByUser(oneByEmail);
+
+        search.forEach(item -> {
+            reviewsByUser.forEach(review -> {
+                if(item.getItemKey().equals(review.getItem().getItemKey())
+                && item.getType().equals(review.getItem().getType())) item.setFav(true);
+            });
+        });
+
+        return search;
     }
 
     @PostMapping("/login")

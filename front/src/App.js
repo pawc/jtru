@@ -58,7 +58,8 @@ class App extends React.Component {
                 artists: item.artists,
                 img_src: item.img_src,
                 year: item.year,
-                itemType: item.type
+                itemType: item.type,
+                fav: item.fav
               }
               this.state.albums.push(album)
               return album

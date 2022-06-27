@@ -60,7 +60,6 @@ public class SpotifyService {
                 artists.add(artist.getName());
             }
 
-
             item.setYear(Integer.parseInt(i.getReleaseDate().substring(0, 4)));
             item.setArtists(StringUtils.join(artists, ","));
             item.setTitle(i.getName());

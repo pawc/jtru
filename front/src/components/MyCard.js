@@ -13,7 +13,7 @@ class MyCard extends React.Component {
   constructor(props){
     super(props)
     this.state = {
-      isFav : false
+      isFav : props.fav
     }
   }
 
