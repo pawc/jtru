@@ -85,8 +85,10 @@ export default function App() {
         let resFavs = []
         res.json().then(json => {
           json.map((review, i) => {
-            resFavs.push(review.item)
-            return review.item
+            let item = review.item
+            item.key = item.itemKey
+            resFavs.push(item)
+            return item
           })
           setFavs(resFavs)
         })
@@ -95,6 +97,14 @@ export default function App() {
         setLoggedIn(false)
       }
     })
+  }
+
+  const unFav = (unFavItemKey) => {
+    let found = favs.filter(item => item.itemKey === unFavItemKey)[0]
+    let index = favs.indexOf(found)
+    let newFavs = [...favs]
+    newFavs.splice(index, 1)
+    setFavs(newFavs)
   }
 
   return (
@@ -113,7 +123,7 @@ export default function App() {
               </Typography>
 
               <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-                <Link to="/">
+                <Link to="/" onClick={() => setAlbums([])}>
                   <Button sx={{ my: 2, color: 'white', display: 'block' }}>
                     browse
                   </Button>
@@ -165,7 +175,7 @@ export default function App() {
               action={(e) => search(e)} 
             />}
           />
-          <Route path="/fav" element={<FavComponent albums={favs}/>}/>
+          <Route path="/fav" element={<FavComponent albums={favs} unFav={unFav}/>}/>
           <Route path="/profile" element={<ProfileComponent/>}/>
         </Routes>
         }

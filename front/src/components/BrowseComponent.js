@@ -37,6 +37,7 @@ export default function BrowseComponent(props){
                       year = {a.year}
                       itemType = {a.itemType}
                       fav = {a.fav}
+                      unFav = {() => {}}
                     />
                 )})
               }       

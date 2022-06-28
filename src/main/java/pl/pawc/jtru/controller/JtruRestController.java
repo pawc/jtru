@@ -96,7 +96,12 @@ public class JtruRestController {
     public List<Review> myReviews(HttpServletRequest request){
         String email = request.getRemoteUser();
         User oneByEmail = userRepository.findOneByEmail(email);
-        return reviewRepository.findAllByUser(oneByEmail);
+        List<Review> reviews = reviewRepository.findAllByUser(oneByEmail);
+        reviews.forEach(r -> {
+            r.getItem().setFav(true);
+            r.setUser(null);
+        });
+        return reviews;
     }
 
 }

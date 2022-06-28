@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 import pl.pawc.jtru.entity.Item;
 import se.michaelthelin.spotify.SpotifyApi;
 import se.michaelthelin.spotify.exceptions.SpotifyWebApiException;
+import se.michaelthelin.spotify.exceptions.detailed.UnauthorizedException;
 import se.michaelthelin.spotify.model_objects.credentials.ClientCredentials;
 import se.michaelthelin.spotify.model_objects.specification.AlbumSimplified;
 import se.michaelthelin.spotify.model_objects.specification.ArtistSimplified;
@@ -46,10 +47,19 @@ public class SpotifyService {
 
     public List<Item> search(String input) throws IOException, ParseException, SpotifyWebApiException {
 
-        Paging<AlbumSimplified> response =
-            spotifyApi.searchAlbums(input)
+        Paging<AlbumSimplified> response;
+        try{
+            response = spotifyApi.searchAlbums(input)
                 .build()
                 .execute();
+        }
+        catch(UnauthorizedException e){
+            String refreshToken = spotifyApi.getRefreshToken();
+            spotifyApi.setAccessToken(refreshToken);
+            response = spotifyApi.searchAlbums(input)
+                .build()
+                .execute();
+        }
 
         List<Item> results = new ArrayList<>();
 

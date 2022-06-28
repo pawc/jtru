@@ -11,14 +11,15 @@ export default function FavComponent(props){
               { props.albums.map((a, i) => {
                   return (
                     <MyCard 
-                      key = {a.key}
-                      itemKey = {a.key}
+                      key = {a.itemKey}
+                      itemKey = {a.itemKey}
                       title = {a.title} 
                       img_src = {a.img_src}
                       artists = {a.artists}
                       year = {a.year}
                       itemType = {a.itemType}
                       fav = {a.fav}
+                      unFav = {props.unFav}
                     />
                 )})
               }       
