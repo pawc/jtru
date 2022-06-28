@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import '@fontsource/roboto/300.css';
 import BrowseComponent from './components/BrowseComponent';
 import FavComponent from './components/FavComponent';
@@ -16,21 +16,16 @@ import {
   Routes, Route, Link
 } from 'react-router-dom'
 
-class App extends React.Component {
+export default function App() {
 
-  constructor(props){
-    super(props)
-    this.state = {
-      albums: [],
-    }
-  }
+  const [isLoggedIn, setLoggedIn] = useState(false)
+  const [albums, setAlbums] = useState([])
+  const [favs, setFavs] = useState([])
   
-  testFetch(e){
+  const search = e => {
     if(e.key !== 'Enter') return null
 
-    this.setState({
-      albums: []
-    })
+    setAlbums([])
 
     let inputSearch = document.getElementById('searchField').value;
 
@@ -50,6 +45,7 @@ class App extends React.Component {
       })
       .then(res => {
         if(res.ok){
+          let resAlbums = []
           res.json().then(json => {
             json.map((item, i) => {
               let album = {
@@ -61,99 +57,121 @@ class App extends React.Component {
                 itemType: item.type,
                 fav: item.fav
               }
-              this.state.albums.push(album)
+              resAlbums.push(album)
               return album
             })
-            this.setState({})
+            setAlbums(resAlbums)
           })
         }
         else{
-          this.setState({isLoggedIn: false})
+          setLoggedIn(false)
         }
       })
       
   }
 
-  render() {
-    return (
-      <Router>
-      <Box justifyContent="center">
-        <Box sx={{ flexGrow: 1 }}>
-            <AppBar position="static" style={{ background: '#2f9c4c' }}>
-              <Toolbar>
-                <Typography
-                  variant="h5"
-                  noWrap
-                  component="div"
-                  sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } }}
-                >
-                  jTru
-                </Typography>
+  const getFavs = () => {
+    setFavs([])
 
-                <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-                  <Link to="/">
-                    <Button sx={{ my: 2, color: 'white', display: 'block' }}>
-                      browse
-                    </Button>
-                  </Link>
-                  <Link to="/fav">
-                    <Button sx={{ my: 2, color: 'white', display: 'block' }}>
-                        fav
-                    </Button>
-                  </Link>
-                  <Link to="/profile">
-                    <Button sx={{ my: 2, color: 'white', display: 'block' }}>
-                      profile 
-                    </Button>
-                  </Link>
-                    <Button sx={{ my: 2, color: 'white', display: 'block' }} 
-                      onClick={() => {
-                        fetch(configData.SERVER_URL + "/login", {
-                          method: "POST",
-                          credentials: 'include',
-                          headers: {
-                            'Authorization': 'Basic logout'
-                          }
-                        })
-                        .then((response) => {
-                          this.setState({isLoggedIn: false})
-                        })
-                      }}
-                    >
-                      logout
-                    </Button>
-                </Box>
-
-              </Toolbar>
-            </AppBar>
-          </Box>
-
-          { !this.state.isLoggedIn &&
-            <LoginForm loginCallback={responseOk => { 
-                this.setState({
-                  isLoggedIn: responseOk,
-                })
-              }
-            }/>
-          }
-
-          { this.state.isLoggedIn &&
-          <Routes>
-            <Route path="/" element={
-              <BrowseComponent 
-                albums={this.state.albums}
-                action={(e) => this.testFetch(e)} 
-              />}
-            />
-            <Route path="/fav" element={<FavComponent/>}/>
-            <Route path="/profile" element={<ProfileComponent/>}/>
-          </Routes>
-          }
-
-      </Box>
-      </Router>
-    );
+    fetch(configData.SERVER_URL + '/myReviews?',
+    {
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      credentials: 'include'
+    })
+    .then(res => {
+      if(res.ok){
+        let resFavs = []
+        res.json().then(json => {
+          json.map((review, i) => {
+            resFavs.push(review.item)
+            return review.item
+          })
+          setFavs(resFavs)
+        })
+      }
+      else{
+        setLoggedIn(false)
+      }
+    })
   }
-}
 
-export default App;
+  return (
+    <Router>
+    <Box justifyContent="center">
+      <Box sx={{ flexGrow: 1 }}>
+          <AppBar position="static" style={{ background: '#2f9c4c' }}>
+            <Toolbar>
+              <Typography
+                variant="h5"
+                noWrap
+                component="div"
+                sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } }}
+              >
+                jTru
+              </Typography>
+
+              <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+                <Link to="/">
+                  <Button sx={{ my: 2, color: 'white', display: 'block' }}>
+                    browse
+                  </Button>
+                </Link>
+                <Link to="/fav" onClick={getFavs}>
+                  <Button sx={{ my: 2, color: 'white', display: 'block' }}>
+                      fav
+                  </Button>
+                </Link>
+                <Link to="/profile">
+                  <Button sx={{ my: 2, color: 'white', display: 'block' }}>
+                    profile 
+                  </Button>
+                </Link>
+                  <Button sx={{ my: 2, color: 'white', display: 'block' }} 
+                    onClick={() => {
+                      fetch(configData.SERVER_URL + "/login", {
+                        method: "POST",
+                        credentials: 'include',
+                        headers: {
+                          'Authorization': 'Basic logout'
+                        }
+                      })
+                      .then((response) => {
+                        setLoggedIn(false)
+                      })
+                    }}
+                  >
+                    logout
+                  </Button>
+              </Box>
+
+            </Toolbar>
+          </AppBar>
+        </Box>
+
+        { !isLoggedIn &&
+          <LoginForm loginCallback={responseOk => { 
+              setLoggedIn(responseOk)
+            }
+          }/>
+        }
+
+        { isLoggedIn &&
+        <Routes>
+          <Route path="/" element={
+            <BrowseComponent 
+              albums={albums}
+              action={(e) => search(e)} 
+            />}
+          />
+          <Route path="/fav" element={<FavComponent albums={favs}/>}/>
+          <Route path="/profile" element={<ProfileComponent/>}/>
+        </Routes>
+        }
+
+    </Box>
+    </Router>
+  );
+
+}

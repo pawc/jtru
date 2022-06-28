@@ -44,6 +44,5 @@ export default function BrowseComponent(props){
             </Grid>
         </div>
 
-
     )
 }
