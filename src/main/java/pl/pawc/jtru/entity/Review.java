@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -25,5 +26,11 @@ public class Review {
 
     @ManyToOne
     Item item;
+
+    @Column
+    private float stars;
+
+    @Column
+    private boolean isFav;
 
 }

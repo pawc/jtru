@@ -8,6 +8,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Transient;
+import java.util.Objects;
 
 @Entity
 @Getter
@@ -35,5 +36,21 @@ public class Item {
 
     @Transient
     private boolean isFav;
+
+    @Transient
+    private float stars;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Item item = (Item) o;
+        return Objects.equals(itemKey, item.itemKey) && Objects.equals(type, item.type);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(itemKey, type);
+    }
 
 }

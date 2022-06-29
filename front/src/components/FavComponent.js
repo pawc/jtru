@@ -17,9 +17,10 @@ export default function FavComponent(props){
                       img_src = {a.img_src}
                       artists = {a.artists}
                       year = {a.year}
-                      itemType = {a.itemType}
+                      itemType = {a.type}
                       fav = {a.fav}
                       unFav = {props.unFav}
+                      stars = {a.stars}
                     />
                 )})
               }       

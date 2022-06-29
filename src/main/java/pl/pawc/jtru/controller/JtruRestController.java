@@ -52,8 +52,10 @@ public class JtruRestController {
 
         search.forEach(item -> {
             reviewsByUser.forEach(review -> {
-                if(item.getItemKey().equals(review.getItem().getItemKey())
-                && item.getType().equals(review.getItem().getType())) item.setFav(true);
+                if(item.equals(review.getItem())){
+                    item.setStars(review.getStars());
+                    item.setFav(review.isFav());
+                }
             });
         });
 
@@ -65,9 +67,8 @@ public class JtruRestController {
         response.setStatus(200);
     }
 
-    @PostMapping("/toggle")
+    @PostMapping("/review")
     public void toggle(HttpServletRequest request,
-                       HttpServletResponse response,
                        @RequestBody Review review){
 
         String email = request.getRemoteUser();
@@ -83,12 +84,19 @@ public class JtruRestController {
 
         Review reviewByUserAndItem = reviewRepository.findOneByUserAndItem(oneByEmail, review.getItem());
 
-        if(reviewByUserAndItem == null){
-            reviewRepository.save(review);
+        if(reviewByUserAndItem != null){
+            if(review.getStars() == 0 && !review.isFav()){
+                reviewRepository.delete(reviewByUserAndItem);
+                return;
+            }
+            else{
+                reviewByUserAndItem.setStars(review.getStars());
+                reviewByUserAndItem.setFav(review.isFav());
+                reviewRepository.save(reviewByUserAndItem);
+                return;
+            }
         }
-        else{
-            reviewRepository.delete(reviewByUserAndItem);
-        }
+        reviewRepository.save(review);
 
     }
 
@@ -98,7 +106,6 @@ public class JtruRestController {
         User oneByEmail = userRepository.findOneByEmail(email);
         List<Review> reviews = reviewRepository.findAllByUser(oneByEmail);
         reviews.forEach(r -> {
-            r.getItem().setFav(true);
             r.setUser(null);
         });
         return reviews;

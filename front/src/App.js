@@ -55,7 +55,8 @@ export default function App() {
                 img_src: item.img_src,
                 year: item.year,
                 itemType: item.type,
-                fav: item.fav
+                fav: item.fav,
+                stars: item.stars
               }
               resAlbums.push(album)
               return album
@@ -87,6 +88,8 @@ export default function App() {
           json.map((review, i) => {
             let item = review.item
             item.key = item.itemKey
+            item.fav = review.fav
+            item.stars = review.stars
             resFavs.push(item)
             return item
           })
