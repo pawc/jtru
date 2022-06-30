@@ -26,7 +26,7 @@ import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(origins = "${frontOrigin}")
 public class JtruRestController {
 
     @Autowired
@@ -42,7 +42,6 @@ public class JtruRestController {
     public List<Item> test(HttpServletRequest request,
                            HttpServletResponse response,
                            @RequestParam("q") String q) throws IOException, ParseException, SpotifyWebApiException {
-
 
         List<Item> search = spotifyService.search(q);
 
